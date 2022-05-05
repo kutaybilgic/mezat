@@ -4,6 +4,9 @@ import com.group7.mezat.documents.Role;
 import com.group7.mezat.documents.User;
 import lombok.Data;
 
+import java.util.Collection;
+import java.util.List;
+
 @Data
 public class UserResponse {
     private String id;

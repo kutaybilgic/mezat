@@ -1,5 +1,6 @@
-package com.group7.mezat.Services;
+package com.group7.mezat.services;
 
+import com.group7.mezat.documents.Role;
 import com.group7.mezat.responses.UserResponse;
 import com.group7.mezat.documents.User;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,7 @@ public class UserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()){
             User foundUser = user.get();
-//            foundUser.setEmail(newUser.getEmail());
             foundUser.setPassword(newUser.getPassword());
-//            foundUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             return userRepository.save(foundUser);
         }else{
             return null;
@@ -52,5 +51,22 @@ public class UserService {
     public UserResponse getOneUserByName(String userName) {
         User user = userRepository.findByuserName(userName);
         return new UserResponse(user);
+    }
+
+    public User addCooperativeRoleToUser(String userName) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByuserName(userName));
+        if (user.isPresent()){
+            User foundUser = user.get();
+            if (foundUser.getRole() == Role.ADMIN){
+//! exception
+                return null;
+            }
+            foundUser.setRole(Role.COOPERATIVE);
+            System.out.println(foundUser.getUserName());
+            return userRepository.save(foundUser);
+        }else{
+            //! exception
+            return null;
+        }
     }
 }

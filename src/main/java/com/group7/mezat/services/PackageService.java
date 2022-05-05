@@ -1,0 +1,68 @@
+package com.group7.mezat.services;
+
+import com.group7.mezat.documents.FishPackage;
+import com.group7.mezat.documents.Status;
+import com.group7.mezat.repos.PackageRepository;
+import com.group7.mezat.requests.PackageSoldRequest;
+import com.group7.mezat.requests.PackageUpdateRequest;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class PackageService {
+
+    private PackageRepository packageRepository;
+
+    public List<FishPackage> getOneUsersPackages(String buyerId) {
+        return packageRepository.findAllByBuyerId(buyerId);
+    }
+
+    public void addPackage(FishPackage fishPackage) {
+        packageRepository.insert(fishPackage);
+    }
+
+    public List<FishPackage> getAllSoldPackages() {
+        return packageRepository.findAllByStatus(Status.SOLD);
+    }
+
+    public List<FishPackage> getAllUnsoldPackages() {
+        return packageRepository.findAllByStatus(Status.UNSOLD);
+    }
+
+    public void deletePackage(String packageId) {
+        packageRepository.deleteById(packageId);
+    }
+
+    public void updatePackage(String packageId, PackageUpdateRequest updateRequest) {
+        Optional<FishPackage> fishPackage = packageRepository.findById(packageId);
+        if (fishPackage.isPresent()){
+            FishPackage foundPackage = fishPackage.get();
+            foundPackage.setFishType(updateRequest.getFishType());
+            foundPackage.setFishAmount(updateRequest.getFishAmount());
+            foundPackage.setSellerId(updateRequest.getSellerId());
+            foundPackage.setBuyerId(updateRequest.getBuyerId());
+            foundPackage.setBasePrice(updateRequest.getBasePrice());
+            foundPackage.setSoldPrice(updateRequest.getSoldPrice());
+            foundPackage.setSoldDate(updateRequest.getSoldDate());
+            foundPackage.setAuctionId(updateRequest.getAuctionId());
+            foundPackage.setStatus(updateRequest.getStatus());
+            packageRepository.save(foundPackage);
+        }
+    }
+
+    public void sellPackage(String packageId, PackageSoldRequest soldRequest) {
+        Optional<FishPackage> fishPackage = packageRepository.findById(packageId);
+        if (fishPackage.isPresent()){
+            FishPackage foundPackage = fishPackage.get();
+            foundPackage.setBuyerId(soldRequest.getBuyerId());
+            foundPackage.setSoldPrice(soldRequest.getSoldPrice());
+            foundPackage.setSoldDate(soldRequest.getSoldDate());
+            foundPackage.setStatus(Status.SOLD);
+            packageRepository.save(foundPackage);
+        }
+    }
+}
