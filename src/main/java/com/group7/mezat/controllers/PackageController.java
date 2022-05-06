@@ -18,6 +18,7 @@ public class PackageController {
 
     @GetMapping("/{buyerId}")
     public List<FishPackage> getOneUsersPackages(@PathVariable String buyerId){
+        System.out.println("controller");
         return packageService.getOneUsersPackages(buyerId);
     }
 

@@ -19,6 +19,6 @@ public class Auction {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date auctionEnd;
     private List<FishPackage> fishList;
-//    private List<Bid> bidList;
+    private List<Bid> bidList;
 
 }

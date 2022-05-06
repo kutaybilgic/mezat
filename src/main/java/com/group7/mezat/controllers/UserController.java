@@ -26,9 +26,9 @@ public class UserController {
         return userService.getOneUser(id);
     }
 
-    @GetMapping("userName/{userName}")
-    public UserResponse getOneUserByName(@PathVariable String userName){
-        return userService.getOneUserByName(userName);
+    @GetMapping("mail/{Email}")
+    public UserResponse getOneUserByEmail(@PathVariable String Email){
+        return userService.getOneUserByEmail(Email);
     }
 
     @PostMapping

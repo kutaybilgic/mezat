@@ -1,6 +1,7 @@
 package com.group7.mezat.services;
 
 import com.group7.mezat.documents.Auction;
+import com.group7.mezat.documents.AuctionStatus;
 import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.documents.Status;
 import com.group7.mezat.repos.AuctionRepository;
@@ -35,20 +36,34 @@ public class AuctionService {
         return auctionRepository.getOneAuctionById(id);
     }
 
-    public void addAuction(Auction auction) { auctionRepository.insert(auction);
-    }
+    public void addAuction(Auction auction) { auctionRepository.insert(auction);}
 
-    public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);
-    }
+    public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);}
 
     public void addFishPackageToAuction(FishPackage fishPackage) {
-
         Optional<Auction> auction = auctionRepository.findById(fishPackage.getAuctionId());
         if (auction.isPresent()){
             Auction foundAuction = auction.get();
             foundAuction.getFishList().add(fishPackage);
             auctionRepository.save(foundAuction);
         }
+    }
 
+    public void startAuction(String auctionId) {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
+        if (auction.isPresent()){
+            Auction foundAuction = auction.get();
+            foundAuction.setAuctionStatus(AuctionStatus.OPEN);
+            auctionRepository.save(foundAuction);
+        }
+    }
+
+    public void endAuction(String auctionId) {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
+        if (auction.isPresent()){
+            Auction foundAuction = auction.get();
+            foundAuction.setAuctionStatus(AuctionStatus.FINISHED);
+            auctionRepository.save(foundAuction);
+        }
     }
 }

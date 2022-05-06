@@ -10,7 +10,8 @@ import java.util.List;
 @Data
 public class UserResponse {
     private String id;
-    private String userName;
+    private String name;
+    private String surname;
     private String userMail;
     private String address;
     private String phoneNum;
@@ -18,7 +19,8 @@ public class UserResponse {
 
     public UserResponse(User user){
         this.id = user.getId();
-        this.userName = user.getUserName();
+        this.name = user.getName();
+        this.surname = user.getSurname();
         this.userMail = user.getUserMail();
         this.address = user.getAddress();
         this.phoneNum = user.getPhoneNum();

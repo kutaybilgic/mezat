@@ -48,13 +48,17 @@ public class UserService {
         userRepository.insert(user);
     }
 
-    public UserResponse getOneUserByName(String userName) {
-        User user = userRepository.findByuserName(userName);
-        return new UserResponse(user);
+    public UserResponse getOneUserByEmail(String Email) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUserMail(Email));
+        if (user.isPresent()){
+            User found = user.get();
+            return new UserResponse(found);
+        }
+        return null;
     }
 
     public User addCooperativeRoleToUser(String userName) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByuserName(userName));
+        Optional<User> user = Optional.ofNullable(userRepository.findByUserMail(userName));
         if (user.isPresent()){
             User foundUser = user.get();
             if (foundUser.getRole() == Role.ADMIN){
@@ -62,7 +66,6 @@ public class UserService {
                 return null;
             }
             foundUser.setRole(Role.COOPERATIVE);
-            System.out.println(foundUser.getUserName());
             return userRepository.save(foundUser);
         }else{
             //! exception

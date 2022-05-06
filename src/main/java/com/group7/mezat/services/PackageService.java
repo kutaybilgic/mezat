@@ -18,6 +18,7 @@ public class PackageService {
     private PackageRepository packageRepository;
 
     public List<FishPackage> getOneUsersPackages(String buyerId) {
+        System.out.println("service");
         return packageRepository.findAllByBuyerId(buyerId);
     }
 

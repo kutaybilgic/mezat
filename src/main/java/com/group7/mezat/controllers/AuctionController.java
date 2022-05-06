@@ -25,7 +25,6 @@ public class AuctionController {
         return auctionService.getOneAuctionById(id);
     }
 
-
     @PostMapping
     public void addAuction(@RequestBody Auction auction){
         auctionService.addAuction(auction);
@@ -40,8 +39,19 @@ public class AuctionController {
     public void updateAuction(@PathVariable String auctionId, @RequestBody AuctionUpdateRequest updateRequest){
         auctionService.updateAuction(auctionId, updateRequest);
     }
+
     @PutMapping("/addFish/{auctionId}")
     public void addFishPackageToAuction(@RequestBody FishPackage fishPackage){
         auctionService.addFishPackageToAuction(fishPackage);
+    }
+
+    @PutMapping("/start/{auctionId}")
+    public void startAuction(@PathVariable String auctionId){
+        auctionService.startAuction(auctionId);
+    }
+
+    @PutMapping("/end/{auctionId}")
+    public void endAuction(@PathVariable String auctionId){
+        auctionService.endAuction(auctionId);
     }
 }
