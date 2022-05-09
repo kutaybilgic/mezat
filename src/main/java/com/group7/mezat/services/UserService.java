@@ -61,11 +61,11 @@ public class UserService {
         Optional<User> user = Optional.ofNullable(userRepository.findByUserMail(userName));
         if (user.isPresent()){
             User foundUser = user.get();
-            if (foundUser.getRole() == Role.ADMIN){
-//! exception
-                return null;
-            }
-            foundUser.setRole(Role.COOPERATIVE);
+//            if (foundUser.getRole() == Role.ADMIN){
+////! exception
+//                return null;
+//            }
+//            foundUser.setRole(Role.COOPERATIVE);
             return userRepository.save(foundUser);
         }else{
             //! exception

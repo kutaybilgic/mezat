@@ -82,11 +82,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/package/**").hasAnyRole(Role.BIDDER.toString())
+                .antMatchers(HttpMethod.GET, "/package/**").hasAnyAuthority("ROLE_USER")
                 .antMatchers("/auth/**")
                 .permitAll()
 
-                .anyRequest().authenticated();
+                .anyRequest()
+                .authenticated();
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

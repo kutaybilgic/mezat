@@ -4,6 +4,7 @@ import com.group7.mezat.documents.Role;
 import com.group7.mezat.documents.User;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class UserResponse {
     private String userMail;
     private String address;
     private String phoneNum;
-    private Role role;
+    private Collection<Role> roles = new ArrayList<>();
 
     public UserResponse(User user){
         this.id = user.getId();
@@ -24,7 +25,7 @@ public class UserResponse {
         this.userMail = user.getUserMail();
         this.address = user.getAddress();
         this.phoneNum = user.getPhoneNum();
-        this.role = user.getRole();
+        this.roles = user.getRoles();
     }
 
 }

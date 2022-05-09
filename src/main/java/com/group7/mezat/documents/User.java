@@ -21,6 +21,6 @@ public class User {
     private String userMail;
     private String address;
     private String phoneNum;
-    private Role role;
+    private Collection<Role> roles = new ArrayList<>();
 
 }

@@ -70,7 +70,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setAddress(registerRequest.getAddress());
         user.setPhoneNum(registerRequest.getPhoneNum());
-        user.setRole(Role.BIDDER);
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        user.getRoles().add(role);
         userService.saveUser(user);
         authResponse.setMessage("User successfully registered.");
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
