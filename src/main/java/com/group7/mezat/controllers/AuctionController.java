@@ -40,7 +40,13 @@ public class AuctionController {
         auctionService.updateAuction(auctionId, updateRequest);
     }
 
-    @PutMapping("/addFish/{auctionId}")
+//    @PutMapping("/addFish/{auctionId}")
+//    public void addFishPackageToAuction(@RequestBody FishPackage fishPackage){
+//        auctionService.addFishPackageToAuction(fishPackage);
+//    }
+
+
+    @PutMapping("/addFish")
     public void addFishPackageToAuction(@RequestBody FishPackage fishPackage){
         auctionService.addFishPackageToAuction(fishPackage);
     }
