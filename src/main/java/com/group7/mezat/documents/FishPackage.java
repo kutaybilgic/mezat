@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -23,7 +22,7 @@ public class FishPackage {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date soldDate;
     private String auctionId;
-    private Status status;
+    private FishStatus status;
 
 }
 

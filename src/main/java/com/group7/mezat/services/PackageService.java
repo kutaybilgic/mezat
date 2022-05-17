@@ -1,7 +1,7 @@
 package com.group7.mezat.services;
 
 import com.group7.mezat.documents.FishPackage;
-import com.group7.mezat.documents.Status;
+import com.group7.mezat.documents.FishStatus;
 import com.group7.mezat.repos.PackageRepository;
 import com.group7.mezat.requests.PackageSoldRequest;
 import com.group7.mezat.requests.PackageUpdateRequest;
@@ -27,11 +27,11 @@ public class PackageService {
     }
 
     public List<FishPackage> getAllSoldPackages() {
-        return packageRepository.findAllByStatus(Status.SOLD);
+        return packageRepository.findAllByStatus(FishStatus.SOLD);
     }
 
     public List<FishPackage> getAllUnsoldPackages() {
-        return packageRepository.findAllByStatus(Status.UNSOLD);
+        return packageRepository.findAllByStatus(FishStatus.UNSOLD);
     }
 
     public void deletePackage(String packageId) {
@@ -62,7 +62,7 @@ public class PackageService {
             foundPackage.setBuyerId(soldRequest.getBuyerId());
             foundPackage.setSoldPrice(soldRequest.getSoldPrice());
             foundPackage.setSoldDate(soldRequest.getSoldDate());
-            foundPackage.setStatus(Status.SOLD);
+            foundPackage.setStatus(FishStatus.SOLD);
             packageRepository.save(foundPackage);
         }
     }

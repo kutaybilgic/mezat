@@ -1,5 +1,5 @@
 package com.group7.mezat.documents;
 
-public enum Status {
+public enum FishStatus {
     SOLD, UNSOLD
 }
