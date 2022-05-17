@@ -1,10 +1,9 @@
 package com.group7.mezat.requests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.group7.mezat.documents.Status;
+import com.group7.mezat.documents.FishStatus;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,5 +17,5 @@ public class PackageUpdateRequest {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date soldDate;
     private String auctionId;
-    private Status status;
+    private FishStatus status;
 }

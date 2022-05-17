@@ -1,7 +1,7 @@
 package com.group7.mezat.controllers;
 
 import com.group7.mezat.documents.Auction;
-import com.group7.mezat.documents.FishPackage;
+import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
 import com.group7.mezat.services.AuctionService;
 import lombok.AllArgsConstructor;
@@ -40,15 +40,9 @@ public class AuctionController {
         auctionService.updateAuction(auctionId, updateRequest);
     }
 
-//    @PutMapping("/addFish/{auctionId}")
-//    public void addFishPackageToAuction(@RequestBody FishPackage fishPackage){
-//        auctionService.addFishPackageToAuction(fishPackage);
-//    }
-
-
     @PutMapping("/addFish")
-    public void addFishPackageToAuction(@RequestBody FishPackage fishPackage){
-        auctionService.addFishPackageToAuction(fishPackage);
+    public void addFishPackageToAuction(@RequestBody AddPackageRequest addFishRequest){
+        auctionService.addFishPackageToAuction(addFishRequest);
     }
 
     @PutMapping("/start/{auctionId}")

@@ -1,19 +1,17 @@
 package com.group7.mezat.services;
 
-import com.group7.mezat.controllers.PackageController;
 import com.group7.mezat.documents.Auction;
 import com.group7.mezat.documents.AuctionStatus;
 import com.group7.mezat.documents.FishPackage;
-import com.group7.mezat.documents.Status;
+import com.group7.mezat.documents.FishStatus;
 import com.group7.mezat.repos.AuctionRepository;
+import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,29 +35,30 @@ public class AuctionService {
     }
 
     public Auction getOneAuctionById(String id) {
-        return auctionRepository.getOneAuctionById(id); // optişonal find by id
+        Optional<Auction> auction = auctionRepository.findById(id);
+        if (auction.isPresent()){
+            return auction.get();
+        }
+        return null;
     }
 
     public void addAuction(Auction auction) { auctionRepository.insert(auction);}
 
     public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);}
 
-//    public void addFishPackageToAuction(FishPackage fishPackage) {
-//        Optional<Auction> auction = auctionRepository.findById(fishPackage.getAuctionId());
-//        List<Auction> auctions = auctionRepository.findAllByAuctionStatus(AuctionStatus.STARTING);
-//        System.out.println(auctions.get(0));
-//        if (auction.isPresent()){
-//            Auction foundAuction = auction.get();
-//            foundAuction.getFishList().add(fishPackage);
-//            auctionRepository.save(foundAuction);
-//        }
-//    }
-
-    public void addFishPackageToAuction(FishPackage fishPackage) {
+    public void addFishPackageToAuction(AddPackageRequest packageRequest) {
         List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
-        System.out.println(auctions.get(0));
         Auction foundAuction = auctions.get(0);
+        FishPackage fishPackage = new FishPackage();
+        fishPackage.setFishType(packageRequest.getFishType());
+        fishPackage.setBasePrice(packageRequest.getBasePrice());
+        fishPackage.setFishAmount(packageRequest.getFishAmount());
         fishPackage.setAuctionId(foundAuction.getId());
+        fishPackage.setStatus(FishStatus.UNSOLD);
+        fishPackage.setSoldPrice(0);
+        fishPackage.setBuyerId(null);
+        fishPackage.setSellerId(null);
+        fishPackage.setSoldDate(null);
         packageService.addPackage(fishPackage);
         foundAuction.getFishList().add(fishPackage);
         auctionRepository.save(foundAuction);
