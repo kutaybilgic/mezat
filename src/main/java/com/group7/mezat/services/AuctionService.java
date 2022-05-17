@@ -7,6 +7,7 @@ import com.group7.mezat.documents.FishStatus;
 import com.group7.mezat.repos.AuctionRepository;
 import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
+import com.group7.mezat.responses.AuctionResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -80,5 +81,12 @@ public class AuctionService {
             foundAuction.setAuctionStatus(AuctionStatus.FINISHED);
             auctionRepository.save(foundAuction);
         }
+    }
+
+    public AuctionResponse getCurrentAuction() {
+        List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
+        Auction foundAuction = auctions.get(0);
+        AuctionResponse response = new AuctionResponse(foundAuction);
+        return response;
     }
 }
