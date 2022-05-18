@@ -1,17 +1,21 @@
 package com.group7.mezat.services;
 
-import com.group7.mezat.documents.Auction;
-import com.group7.mezat.documents.AuctionStatus;
-import com.group7.mezat.documents.FishPackage;
-import com.group7.mezat.documents.FishStatus;
+import com.group7.mezat.documents.*;
 import com.group7.mezat.repos.AuctionRepository;
+import com.group7.mezat.repos.UserRepository;
 import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
 import com.group7.mezat.responses.AuctionResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuctionService {
     private AuctionRepository auctionRepository;
+    private UserRepository userRepository;
     private PackageService packageService;
 
     public void updateAuction(String auctionId, AuctionUpdateRequest updateRequest) {
@@ -43,26 +48,40 @@ public class AuctionService {
         return null;
     }
 
-    public void addAuction(Auction auction) { auctionRepository.insert(auction);}
+    public void addAuction(Auction auction) throws Exception {
+        LocalDateTime today = LocalDateTime.now();
+        Date res = Date.from(today.atZone(ZoneId.of("UTC")).toInstant());
+        if (res.before(auction.getAuctionStart())){
+            auctionRepository.insert(auction);
+        }else {
+            throw new Exception("geçmiş tarih");
+        }
+    }
 
     public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);}
 
-    public void addFishPackageToAuction(AddPackageRequest packageRequest) {
+    public void addFishPackageToAuction(AddPackageRequest packageRequest) throws Exception {
         List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
         Auction foundAuction = auctions.get(0);
-        FishPackage fishPackage = new FishPackage();
-        fishPackage.setFishType(packageRequest.getFishType());
-        fishPackage.setBasePrice(packageRequest.getBasePrice());
-        fishPackage.setFishAmount(packageRequest.getFishAmount());
-        fishPackage.setAuctionId(foundAuction.getId());
-        fishPackage.setStatus(FishStatus.UNSOLD);
-        fishPackage.setSoldPrice(0);
-        fishPackage.setBuyerId(null);
-        fishPackage.setSellerId(null);
-        fishPackage.setSoldDate(null);
-        packageService.addPackage(fishPackage);
-        foundAuction.getFishList().add(fishPackage);
-        auctionRepository.save(foundAuction);
+        Optional<User> optionalUser  = Optional.ofNullable(userRepository.findByUserMail(packageRequest.getEmail()));
+        if (optionalUser.isPresent() && packageRequest.getFishType().matches("[a-zA-Z]+")){
+            User foundUser = optionalUser.get();
+            FishPackage fishPackage = new FishPackage();
+            fishPackage.setFishType(packageRequest.getFishType());
+            fishPackage.setBasePrice(packageRequest.getBasePrice());
+            fishPackage.setFishAmount(packageRequest.getFishAmount());
+            fishPackage.setAuctionId(foundAuction.getId());
+            fishPackage.setStatus(FishStatus.UNSOLD);
+            fishPackage.setSoldPrice(0);
+            fishPackage.setBuyerId(null);
+            fishPackage.setSellerId(foundUser.getId());
+            fishPackage.setSoldDate(null);
+            packageService.addPackage(fishPackage);
+            foundAuction.getFishList().add(fishPackage);
+            auctionRepository.save(foundAuction);
+        }else {
+            throw new Exception("email bulunamadı");
+        }
     }
 
     public void startAuction(String auctionId) {
@@ -88,5 +107,13 @@ public class AuctionService {
         Auction foundAuction = auctions.get(0);
         AuctionResponse response = new AuctionResponse(foundAuction);
         return response;
+    }
+
+    public List<Auction> getSortedAuctions() {
+        List<Auction> auctions = auctionRepository.findAll(Sort.by(Sort.Direction.ASC, "auctionStart"));
+//        List<AuctionResponse> responses = null;
+//        auctions.stream().map(auction -> new AuctionResponse(auction)).forEach(auctionResponse -> responses.add(auctionResponse));
+//        return responses;
+        return auctions;
     }
 }

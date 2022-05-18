@@ -7,7 +7,6 @@ public class AddPackageRequest {
     private String fishType;
     private float fishAmount;
     private float basePrice;
-
-//    private String sellerId;
+    private String email;
 
 }
