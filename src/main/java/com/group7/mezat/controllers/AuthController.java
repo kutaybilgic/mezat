@@ -56,10 +56,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) throws Exception {
         AuthResponse authResponse = new AuthResponse();
         if(userService.getOneUserByEmail(registerRequest.getUserMail()) != null) {
-            authResponse.setMessage("Username already in use.");
+            authResponse.setMessage("Email zaten kayıtlı.");
+            return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST); // unutma
+        }
+
+        if (!(registerRequest.getPassword().equals(registerRequest.getPasswordAgain()))){
+            authResponse.setMessage("Şifreler eşleşmiyor");
             return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
         }
 
@@ -74,7 +79,7 @@ public class AuthController {
         role.setName("ROLE_USER");
         user.getRoles().add(role);
         userService.saveUser(user);
-        authResponse.setMessage("User successfully registered.");
+        authResponse.setMessage("Başarıyla kayıt olundu");
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
 }

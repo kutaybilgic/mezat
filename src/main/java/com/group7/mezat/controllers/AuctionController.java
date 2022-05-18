@@ -21,6 +21,11 @@ public class AuctionController {
         return auctionService.getAllAuction();
     }
 
+    @GetMapping("/getSortedAuctions")
+    public List<Auction> getSortedAuctions(){
+        return auctionService.getSortedAuctions();
+    }
+
     @GetMapping("/getCurrentAuction")
     public AuctionResponse getCurrentAuction(){
         return auctionService.getCurrentAuction();
@@ -32,7 +37,7 @@ public class AuctionController {
     }
 
     @PostMapping
-    public void addAuction(@RequestBody Auction auction){
+    public void addAuction(@RequestBody Auction auction) throws Exception {
         auctionService.addAuction(auction);
     }
 
@@ -47,7 +52,7 @@ public class AuctionController {
     }
 
     @PutMapping("/addFish")
-    public void addFishPackageToAuction(@RequestBody AddPackageRequest addFishRequest){
+    public void addFishPackageToAuction(@RequestBody AddPackageRequest addFishRequest) throws Exception {
         auctionService.addFishPackageToAuction(addFishRequest);
     }
 

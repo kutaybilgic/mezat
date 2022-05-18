@@ -13,4 +13,6 @@ public interface AuctionRepository extends MongoRepository<Auction, String> {
     Auction getOneAuctionById(String id);
 
     List<Auction> findAllByAuctionStatus(Sort sort, AuctionStatus status);
+
+    List<Auction> findAll(Sort sort);
 }
