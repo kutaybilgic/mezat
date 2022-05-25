@@ -9,7 +9,6 @@ import com.group7.mezat.responses.AuctionResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 
 import java.time.LocalDate;
@@ -48,13 +47,15 @@ public class AuctionService {
         return null;
     }
 
-    public void addAuction(Auction auction) throws Exception {
+    public void addAuction(Auction auction) throws Exception{
+        Optional<Auction> existAuction = Optional.ofNullable(auctionRepository.findByDate(auction.getAuctionStart()));
         LocalDateTime today = LocalDateTime.now();
         Date res = Date.from(today.atZone(ZoneId.of("UTC")).toInstant());
-        if (res.before(auction.getAuctionStart())){
+        if ((res.before(auction.getAuctionStart()) || !(res.equals(auction.getAuctionStart()))) && existAuction.isEmpty()){
             auctionRepository.insert(auction);
-        }else {
-            throw new Exception("geçmiş tarih");
+        }
+        else{
+            throw new Exception("error");
         }
     }
 
@@ -84,12 +85,20 @@ public class AuctionService {
         }
     }
 
-    public void startAuction(String auctionId) {
+    public void startAuction(String auctionId) throws Exception{
         Optional<Auction> auction = auctionRepository.findById(auctionId);
         if (auction.isPresent()){
             Auction foundAuction = auction.get();
-            foundAuction.setAuctionStatus(AuctionStatus.OPEN);
-            auctionRepository.save(foundAuction);
+            LocalDateTime date = LocalDateTime.from(LocalDate.now());
+            Date dateResult = Date.from(date.atZone(ZoneId.of("UTC")).toInstant());
+            if(foundAuction.getAuctionStart().after(dateResult)){
+                foundAuction.setAuctionStatus(AuctionStatus.OPEN);
+                auctionRepository.save(foundAuction);
+            }
+            else{
+                throw new Exception("error");
+            }
+
         }
     }
 

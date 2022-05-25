@@ -24,7 +24,7 @@ public class AuctionManager {
     //notification
 
     @PutMapping("/start/{auctionId}")
-    public void startAuction(@PathVariable String auctionId){
+    public void startAuction(@PathVariable String auctionId) throws Exception {
         auctionController.startAuction(auctionId);
     }
 

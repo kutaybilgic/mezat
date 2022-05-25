@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 public interface AuctionRepository extends MongoRepository<Auction, String> {
@@ -15,4 +16,6 @@ public interface AuctionRepository extends MongoRepository<Auction, String> {
     List<Auction> findAllByAuctionStatus(Sort sort, AuctionStatus status);
 
     List<Auction> findAll(Sort sort);
+
+    Auction findByDate(Date auctionStart);
 }
