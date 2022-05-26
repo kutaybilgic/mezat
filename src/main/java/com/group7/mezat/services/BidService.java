@@ -27,4 +27,8 @@ public class BidService {
     public List<Bid> getUserBids(String userId) {
         return bidRepository.findOneBidByBidderId(userId);
     }
+
+    public void publishBid(Bid bid) {
+        bidRepository.insert(bid);
+    }
 }
