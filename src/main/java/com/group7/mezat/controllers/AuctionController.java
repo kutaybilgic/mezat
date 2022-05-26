@@ -4,8 +4,10 @@ import com.group7.mezat.documents.Auction;
 import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
 import com.group7.mezat.responses.AuctionResponse;
+import com.group7.mezat.responses.ErrorResponse;
 import com.group7.mezat.services.AuctionService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +39,8 @@ public class AuctionController {
     }
 
     @PostMapping
-    public void addAuction(@RequestBody Auction auction) throws Exception {
-        auctionService.addAuction(auction);
+    public ResponseEntity<ErrorResponse> addAuction(@RequestBody Auction auction) throws Exception {
+        return auctionService.addAuction(auction);
     }
 
     @DeleteMapping("/delete/{auctionId}")
@@ -53,7 +55,7 @@ public class AuctionController {
 
     @PutMapping("/addFish")
     public void addFishPackageToAuction(@RequestBody AddPackageRequest addFishRequest) throws Exception {
-        auctionService.addFishPackageToAuction(addFishRequest);
+       auctionService.addFishPackageToAuction(addFishRequest);
     }
 
     @PutMapping("/start/{auctionId}")

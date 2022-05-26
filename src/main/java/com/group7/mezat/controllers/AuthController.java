@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) throws Exception {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
         AuthResponse authResponse = new AuthResponse();
         if(userService.getOneUserByEmail(registerRequest.getUserMail()) != null) {
             authResponse.setMessage("Email zaten kayıtlı.");

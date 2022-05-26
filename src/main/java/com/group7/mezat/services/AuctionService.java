@@ -6,14 +6,15 @@ import com.group7.mezat.repos.UserRepository;
 import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
 import com.group7.mezat.responses.AuctionResponse;
+import com.group7.mezat.responses.ErrorResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -47,16 +48,35 @@ public class AuctionService {
         return null;
     }
 
-    public void addAuction(Auction auction) throws Exception{
-        Optional<Auction> existAuction = Optional.ofNullable(auctionRepository.findByDate(auction.getAuctionStart()));
-        LocalDateTime today = LocalDateTime.now();
-        Date res = Date.from(today.atZone(ZoneId.of("UTC")).toInstant());
-        if ((res.before(auction.getAuctionStart()) || !(res.equals(auction.getAuctionStart()))) && existAuction.isEmpty()){
-            auctionRepository.insert(auction);
+    public ResponseEntity<ErrorResponse> addAuction(Auction auction) throws Exception{
+        Optional<Auction> existAuction = Optional.ofNullable(auctionRepository.findByAuctionStart(auction.getAuctionStart()));
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Istanbul"));
+        Date res = Date.from(Instant.from(now));
+        ErrorResponse response = new ErrorResponse();
+        System.out.println(res);
+
+//       if auction is before today return error response with status code 400
+        if(auction.getAuctionStart().before(res)){  //auction start date is before today
+            response.setMessage("Geçmiş bir tarihte bir açılış tarihi olamaz");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
         }
-        else{
-            throw new Exception("error");
+
+//        if auction date is now return error response with status code 400
+        if(auction.getAuctionStart().equals(res)){  //auction start date is today
+            response.setMessage("Şu ana bir açılış tarihi olamaz");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
         }
+
+//        if an auction is already exist return error response with status code 400
+        if(existAuction.isPresent()){
+            response.setMessage("Bu tarihte zaten bir mezat var");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
+        }
+
+        response.setMessage("Mezat başarıyla eklendi");
+        auctionRepository.insert(auction);
+
+        return new ResponseEntity<>(response, HttpStatus.OK); //ok
     }
 
     public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);}
@@ -91,14 +111,13 @@ public class AuctionService {
             Auction foundAuction = auction.get();
             LocalDateTime date = LocalDateTime.from(LocalDate.now());
             Date dateResult = Date.from(date.atZone(ZoneId.of("UTC")).toInstant());
-            if(foundAuction.getAuctionStart().after(dateResult)){
+            if(foundAuction.getAuctionStart().before(dateResult)){
                 foundAuction.setAuctionStatus(AuctionStatus.OPEN);
                 auctionRepository.save(foundAuction);
             }
             else{
                 throw new Exception("error");
             }
-
         }
     }
 
@@ -119,10 +138,6 @@ public class AuctionService {
     }
 
     public List<Auction> getSortedAuctions() {
-        List<Auction> auctions = auctionRepository.findAll(Sort.by(Sort.Direction.ASC, "auctionStart"));
-//        List<AuctionResponse> responses = null;
-//        auctions.stream().map(auction -> new AuctionResponse(auction)).forEach(auctionResponse -> responses.add(auctionResponse));
-//        return responses;
-        return auctions;
+        return auctionRepository.findAll(Sort.by(Sort.Direction.ASC, "auctionStart"));
     }
 }
