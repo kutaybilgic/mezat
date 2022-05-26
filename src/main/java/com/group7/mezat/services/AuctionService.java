@@ -109,9 +109,9 @@ public class AuctionService {
         Optional<Auction> auction = auctionRepository.findById(auctionId);
         if (auction.isPresent()){
             Auction foundAuction = auction.get();
-            LocalDateTime date = LocalDateTime.from(LocalDate.now());
-            Date dateResult = Date.from(date.atZone(ZoneId.of("UTC")).toInstant());
-            if(foundAuction.getAuctionStart().before(dateResult)){
+            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Istanbul"));
+            Date res = Date.from(Instant.from(now));
+            if(foundAuction.getAuctionStart().before(res)){
                 foundAuction.setAuctionStatus(AuctionStatus.OPEN);
                 auctionRepository.save(foundAuction);
             }
