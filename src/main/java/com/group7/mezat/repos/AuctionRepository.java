@@ -17,5 +17,5 @@ public interface AuctionRepository extends MongoRepository<Auction, String> {
 
     List<Auction> findAll(Sort sort);
 
-    Auction findByDate(Date auctionStart);
+    Auction findByAuctionStart(Date auctionStart);
 }
