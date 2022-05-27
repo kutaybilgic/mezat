@@ -63,6 +63,11 @@ public class AuctionController {
         auctionService.startAuction(auctionId);
     }
 
+    @PutMapping("/cancel/{auctionId}")
+    public void cancelAuction(@PathVariable String auctionId) throws Exception {
+        auctionService.cancelAuction(auctionId);
+    }
+
     @PutMapping("/end/{auctionId}")
     public void endAuction(@PathVariable String auctionId){
         auctionService.endAuction(auctionId);

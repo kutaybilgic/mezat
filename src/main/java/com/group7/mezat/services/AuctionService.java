@@ -140,4 +140,13 @@ public class AuctionService {
     public List<Auction> getSortedAuctions() {
         return auctionRepository.findAll(Sort.by(Sort.Direction.ASC, "auctionStart"));
     }
+
+    public void cancelAuction(String auctionId) {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
+        if (auction.isPresent()){
+            Auction foundAuction = auction.get();
+            foundAuction.setAuctionStatus(AuctionStatus.CANCELLED);
+            auctionRepository.save(foundAuction);
+        }
+    }
 }
