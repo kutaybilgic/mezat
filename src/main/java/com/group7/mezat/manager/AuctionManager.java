@@ -8,6 +8,7 @@ import com.group7.mezat.controllers.UserController;
 import com.group7.mezat.documents.Bid;
 import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.documents.User;
+import com.group7.mezat.requests.BidRequest;
 import com.group7.mezat.services.AuctionService;
 import com.group7.mezat.services.BidService;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,6 @@ public class AuctionManager {
     private AuctionController auctionController;
     private AuctionService auctionService;
     private List<User> userList;
-    private BidController bidController;
     //notification
     private BidService bidService;
     private UserController userController;
@@ -46,16 +46,11 @@ public class AuctionManager {
     }
 
 
-    @PostMapping("/takeBid")
-    public void takeBid(@RequestBody Bid bid){
-        bid.setBidId(UUID.randomUUID().toString());
-        bid.setBidderId("628fbe6f95def33a53bf1370");
-        bid.setAuctionId(auctionService.getCurrentAuction().getId());
-        bid.setFishPackageId("628fbf378baf6a53229f35da");
-        template.convertAndSend(MQConfig.EXCHANGE,
-                MQConfig.ROUTING_KEY,bid);
-
-        bidService.publishBid(bid);
+//    @PostMapping("/bid") take a {@link bidRequest} and make a bid
+    @PostMapping("/bid")
+    public void takeBid(@RequestBody BidRequest bidRequest) {
+        template.convertAndSend(MQConfig.EXCHANGE, MQConfig.ROUTING_KEY, bidRequest);
+        bidService.takeBid(bidRequest);
     }
 
     public void sellPackage(User bidder, FishPackage fishPackage){

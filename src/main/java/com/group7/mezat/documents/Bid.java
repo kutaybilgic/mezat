@@ -13,5 +13,5 @@ public class Bid {
     private String bidderId;
     private String auctionId;
     private String fishPackageId;
-    private float bid;
+    private float  bid;
 }

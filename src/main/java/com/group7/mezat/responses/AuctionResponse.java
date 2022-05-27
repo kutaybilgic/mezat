@@ -23,7 +23,7 @@ public class AuctionResponse {
 
 
     public AuctionResponse(Auction auction) {
-        this.id = id;
+        this.id = auction.getId();
         this.auctionStatus = auction.getAuctionStatus();
         this.auctionStart = auction.getAuctionStart();
         this.auctionEnd = auction.getAuctionEnd();

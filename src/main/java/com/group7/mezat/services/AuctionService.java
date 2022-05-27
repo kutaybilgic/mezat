@@ -53,7 +53,6 @@ public class AuctionService {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Istanbul"));
         Date res = Date.from(Instant.from(now));
         ErrorResponse response = new ErrorResponse();
-        System.out.println(res);
 
 //       if auction is before today return error response with status code 400
         if(auction.getAuctionStart().before(res)){  //auction start date is before today

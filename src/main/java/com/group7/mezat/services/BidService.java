@@ -5,6 +5,7 @@ import com.group7.mezat.documents.Auction;
 import com.group7.mezat.documents.Bid;
 import com.group7.mezat.documents.User;
 import com.group7.mezat.repos.BidRepository;
+import com.group7.mezat.requests.BidRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,13 @@ public class BidService {
         return bidRepository.findOneBidByBidderId(userId);
     }
 
-    public void publishBid(Bid bid) {
+    public void takeBid(BidRequest bidRequest) {
+        Bid bid = new Bid();
+        System.out.println(bidRequest.getBid());
+        bid.setBid(bidRequest.getBid());
+        bid.setBidderId(bidRequest.getBidderId());
+        bid.setAuctionId(bidRequest.getAuctionId());
+        bid.setFishPackageId(bidRequest.getFishPackageId());
         bidRepository.insert(bid);
     }
 }
