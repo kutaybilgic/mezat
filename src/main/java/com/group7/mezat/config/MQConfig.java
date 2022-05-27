@@ -1,4 +1,4 @@
-package com.group7.mezat.manager;
+package com.group7.mezat.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

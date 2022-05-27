@@ -1,6 +1,7 @@
 package com.group7.mezat.manager;
 
 
+import com.group7.mezat.config.MQConfig;
 import com.group7.mezat.controllers.AuctionController;
 import com.group7.mezat.controllers.BidController;
 import com.group7.mezat.controllers.UserController;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @RestController
