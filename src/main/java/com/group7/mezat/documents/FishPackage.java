@@ -23,6 +23,7 @@ public class FishPackage {
     private Date soldDate;
     private String auctionId;
     private FishStatus status;
+    private BidStatus bidStatus;
 
 }
 

@@ -50,8 +50,9 @@ public class AuctionManager {
     @PostMapping("/bid")
     public void takeBid(@RequestBody BidRequest bidRequest) {
         template.convertAndSend(MQConfig.EXCHANGE, MQConfig.ROUTING_KEY, bidRequest);
-        bidService.takeBid(bidRequest);
     }
+
+
 
     public void sellPackage(User bidder, FishPackage fishPackage){
 

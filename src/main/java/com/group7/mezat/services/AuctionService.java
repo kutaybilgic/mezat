@@ -96,6 +96,7 @@ public class AuctionService {
             fishPackage.setBuyerId(null);
             fishPackage.setSellerId(foundUser.getId());
             fishPackage.setSoldDate(null);
+            fishPackage.setBidStatus(BidStatus.CLOSE);
             packageService.addPackage(fishPackage);
             foundAuction.getFishList().add(fishPackage);
             auctionRepository.save(foundAuction);
@@ -130,10 +131,20 @@ public class AuctionService {
     }
 
     public AuctionResponse getCurrentAuction() {
-        List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
-        Auction foundAuction = auctions.get(0);
-        AuctionResponse response = new AuctionResponse(foundAuction);
-        return response;
+        List<Auction> openAuction = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.OPEN);
+        if(openAuction.size() > 0){
+            Auction foundAuction = openAuction.get(0);
+            AuctionResponse auctionResponse = new AuctionResponse(foundAuction);
+            return auctionResponse;
+
+        }
+        else{
+            List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
+            Auction foundAuction = auctions.get(0);
+            AuctionResponse response = new AuctionResponse(foundAuction);
+            return response;
+        }
+
     }
 
     public List<Auction> getSortedAuctions() {

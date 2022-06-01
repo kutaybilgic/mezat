@@ -3,6 +3,7 @@ package com.group7.mezat.controllers;
 
 import com.group7.mezat.documents.Bid;
 import com.group7.mezat.config.MQConfig;
+import com.group7.mezat.requests.BidRequest;
 import com.group7.mezat.services.BidService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,9 +25,8 @@ public class BidController {
     private RabbitTemplate template;
 
     @RabbitListener(queues = MQConfig.QUEUE)
-    public void listener(Bid bid){
-        System.out.println(bid);
-
+    public void listener(BidRequest bid){
+        bidService.takeBid(bid);
     }
 
     @GetMapping
@@ -41,5 +41,9 @@ public class BidController {
 
     @GetMapping("/userId/{userId}")
     public List<Bid> getUserBids(@PathVariable String userId){return bidService.getUserBids(userId);}
+
+    // get all bids by fishPackageId
+    @GetMapping("/fishPackageId/{fishPackageId}")
+    public List<Bid> getFishPackageBids(@PathVariable String fishPackageId){return bidService.getFishPackageBids(fishPackageId);}
 
 }

@@ -5,6 +5,7 @@ import com.group7.mezat.documents.FishStatus;
 import com.group7.mezat.repos.PackageRepository;
 import com.group7.mezat.requests.PackageSoldRequest;
 import com.group7.mezat.requests.PackageUpdateRequest;
+import com.group7.mezat.responses.PackageResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +66,13 @@ public class PackageService {
             foundPackage.setStatus(FishStatus.SOLD);
             packageRepository.save(foundPackage);
         }
+    }
+
+    public PackageResponse getCurrentFish() {
+        List<FishPackage> packages = packageRepository.findAllByStatus(FishStatus.UNSOLD);
+        if (packages.size() > 0) {
+            return new PackageResponse(packages.get(0));
+        }
+        return null;
     }
 }

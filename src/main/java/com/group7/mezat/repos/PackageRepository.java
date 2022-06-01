@@ -1,5 +1,6 @@
 package com.group7.mezat.repos;
 
+import com.group7.mezat.documents.BidStatus;
 import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.documents.FishStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;

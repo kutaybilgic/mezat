@@ -1,12 +1,12 @@
 package com.group7.mezat.services;
 
-
 import com.group7.mezat.documents.Auction;
 import com.group7.mezat.documents.Bid;
-import com.group7.mezat.documents.User;
 import com.group7.mezat.repos.BidRepository;
+import com.group7.mezat.repos.PackageRepository;
 import com.group7.mezat.requests.BidRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BidService {
     private BidRepository bidRepository;
+    private PackageService packageService;
+    private AuctionService auctionService;
 
     public List<Bid> getAllBids() {
         return bidRepository.findAll();
@@ -31,11 +33,16 @@ public class BidService {
 
     public void takeBid(BidRequest bidRequest) {
         Bid bid = new Bid();
-        System.out.println(bidRequest.getBid());
         bid.setBid(bidRequest.getBid());
         bid.setBidderId(bidRequest.getBidderId());
-        bid.setAuctionId(bidRequest.getAuctionId());
-        bid.setFishPackageId(bidRequest.getFishPackageId());
+        bid.setAuctionId(auctionService.getCurrentAuction().getId());
+        bid.setFishPackageId(packageService.getCurrentFish().getId());
         bidRepository.insert(bid);
     }
+
+    public List<Bid> getFishPackageBids(String fishPackageId) {
+        return bidRepository.findAllByFishPackageId(Sort.by(Sort.Direction.DESC, "bid"),fishPackageId);
+    }
+
+
 }

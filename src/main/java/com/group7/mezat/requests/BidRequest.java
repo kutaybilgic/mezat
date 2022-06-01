@@ -6,7 +6,5 @@ import lombok.Data;
 public class BidRequest {
 
     private String bidderId;
-    private String auctionId;
     private float bid;
-    private String fishPackageId;
 }
