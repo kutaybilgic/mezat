@@ -18,4 +18,6 @@ public interface AuctionRepository extends MongoRepository<Auction, String> {
     List<Auction> findAll(Sort sort);
 
     Auction findByAuctionStart(Date auctionStart);
+
+    List<Auction> getFishPackages(String auctionId);
 }

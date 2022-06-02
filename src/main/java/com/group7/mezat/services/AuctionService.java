@@ -159,4 +159,8 @@ public class AuctionService {
             auctionRepository.save(foundAuction);
         }
     }
+
+    public List<Auction> getFishPackages(String auctionId) {
+        return auctionRepository.getFishPackages(auctionId);
+    }
 }

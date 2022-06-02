@@ -28,6 +28,11 @@ public class AuctionController {
         return auctionService.getSortedAuctions();
     }
 
+    @GetMapping("/getSortedAuctions/{auctionId}")
+    public List<Auction> getFishPackages(@PathVariable String auctionId){
+        return auctionService.getFishPackages(auctionId);
+    }
+
     @GetMapping("/getCurrentAuction")
     public AuctionResponse getCurrentAuction(){
         return auctionService.getCurrentAuction();
