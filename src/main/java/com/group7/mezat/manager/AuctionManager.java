@@ -3,9 +3,7 @@ package com.group7.mezat.manager;
 
 import com.group7.mezat.config.MQConfig;
 import com.group7.mezat.controllers.AuctionController;
-import com.group7.mezat.controllers.BidController;
 import com.group7.mezat.controllers.UserController;
-import com.group7.mezat.documents.Bid;
 import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.documents.User;
 import com.group7.mezat.requests.BidRequest;

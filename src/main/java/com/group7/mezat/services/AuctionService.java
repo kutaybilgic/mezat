@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +98,7 @@ public class AuctionService {
             fishPackage.setSellerId(foundUser.getId());
             fishPackage.setSoldDate(null);
             fishPackage.setBidStatus(BidStatus.CLOSE);
+            fishPackage.setBids(new ArrayList<>());
             packageService.addPackage(fishPackage);
             foundAuction.getFishList().add(fishPackage);
             auctionRepository.save(foundAuction);
@@ -156,6 +158,25 @@ public class AuctionService {
         if (auction.isPresent()){
             Auction foundAuction = auction.get();
             foundAuction.setAuctionStatus(AuctionStatus.CANCELLED);
+            auctionRepository.save(foundAuction);
+        }
+    }
+
+    public List<FishPackage> getFishPackage(String Id) {
+        List<FishPackage> fishPackageList;
+        Optional<Auction> auction = auctionRepository.findById(Id);
+        if (auction.isPresent()){
+            fishPackageList = auction.get().getFishList();
+            return fishPackageList;
+        }
+        return null;
+    }
+
+    public void updateAuctionById(Auction auctionId){
+        Optional<Auction> auction = auctionRepository.findById(auctionId.getId());
+        if (auction.isPresent()){
+            Auction foundAuction = auction.get();
+            foundAuction.setFishList(auctionId.getFishList());
             auctionRepository.save(foundAuction);
         }
     }

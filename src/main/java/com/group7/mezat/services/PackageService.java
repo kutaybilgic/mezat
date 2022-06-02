@@ -1,5 +1,6 @@
 package com.group7.mezat.services;
 
+import com.group7.mezat.documents.BidStatus;
 import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.documents.FishStatus;
 import com.group7.mezat.repos.PackageRepository;
@@ -7,6 +8,7 @@ import com.group7.mezat.requests.PackageSoldRequest;
 import com.group7.mezat.requests.PackageUpdateRequest;
 import com.group7.mezat.responses.PackageResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,10 +71,16 @@ public class PackageService {
     }
 
     public PackageResponse getCurrentFish() {
-        List<FishPackage> packages = packageRepository.findAllByStatus(FishStatus.UNSOLD);
-        if (packages.size() > 0) {
-            return new PackageResponse(packages.get(0));
-        }
-        return null;
+        FishPackage packageFish = packageRepository.findByBidStatus(BidStatus.OPEN);
+        System.out.println(packageFish);
+        return new PackageResponse(packageFish);
+    }
+
+    public FishPackage getFishPackageById(String currentPackageId) {
+        return packageRepository.findById(currentPackageId).get();
+    }
+
+    public void updateFishPackage(FishPackage fishPackage) {
+        packageRepository.save(fishPackage);
     }
 }

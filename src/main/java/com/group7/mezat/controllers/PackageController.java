@@ -2,6 +2,7 @@ package com.group7.mezat.controllers;
 
 import com.group7.mezat.requests.PackageSoldRequest;
 import com.group7.mezat.requests.PackageUpdateRequest;
+import com.group7.mezat.responses.PackageResponse;
 import com.group7.mezat.services.PackageService;
 import com.group7.mezat.documents.FishPackage;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,11 @@ public class PackageController {
     @PostMapping
     public void addPackage(@RequestBody FishPackage fishPackage){
         packageService.addPackage(fishPackage);
+    }
+
+    @GetMapping("/getCurrentFish")
+    public PackageResponse getCurrentFish(){
+        return packageService.getCurrentFish();
     }
 
     @GetMapping("/allSoldPackages")

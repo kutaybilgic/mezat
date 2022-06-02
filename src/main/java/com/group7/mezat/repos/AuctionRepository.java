@@ -3,6 +3,8 @@ package com.group7.mezat.repos;
 import com.group7.mezat.documents.Auction;
 import com.group7.mezat.documents.AuctionStatus;
 import com.group7.mezat.documents.FishPackage;
+import com.group7.mezat.responses.AuctionResponse;
+import com.group7.mezat.responses.PackageResponse;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -18,4 +20,7 @@ public interface AuctionRepository extends MongoRepository<Auction, String> {
     List<Auction> findAll(Sort sort);
 
     Auction findByAuctionStart(Date auctionStart);
+
+
+
 }
