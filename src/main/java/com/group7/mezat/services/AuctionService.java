@@ -82,29 +82,57 @@ public class AuctionService {
     public void deleteAuction(String auctionId) {auctionRepository.deleteById(auctionId);}
 
     public void addFishPackageToAuction(AddPackageRequest packageRequest) throws Exception {
-        List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
-        Auction foundAuction = auctions.get(0);
-        Optional<User> optionalUser  = Optional.ofNullable(userRepository.findByUserMail(packageRequest.getEmail()));
-        if (optionalUser.isPresent() && packageRequest.getFishType().matches("[a-zA-Z]+")){
-            User foundUser = optionalUser.get();
-            FishPackage fishPackage = new FishPackage();
-            fishPackage.setFishType(packageRequest.getFishType());
-            fishPackage.setBasePrice(packageRequest.getBasePrice());
-            fishPackage.setFishAmount(packageRequest.getFishAmount());
-            fishPackage.setAuctionId(foundAuction.getId());
-            fishPackage.setStatus(FishStatus.UNSOLD);
-            fishPackage.setSoldPrice(0);
-            fishPackage.setBuyerId(null);
-            fishPackage.setSellerId(foundUser.getId());
-            fishPackage.setSoldDate(null);
-            fishPackage.setBidStatus(BidStatus.CLOSE);
-            fishPackage.setBids(new ArrayList<>());
-            packageService.addPackage(fishPackage);
-            foundAuction.getFishList().add(fishPackage);
-            auctionRepository.save(foundAuction);
-        }else {
-            throw new Exception("email bulunamadı");
+        List<Auction> auctions = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.OPEN);
+        if (auctions.size() > 0){
+            Auction foundAuction = auctions.get(0);
+            Optional<User> optionalUser  = Optional.ofNullable(userRepository.findByUserMail(packageRequest.getEmail()));
+            if (optionalUser.isPresent() && packageRequest.getFishType().matches("[a-zA-Z]+")){
+                User foundUser = optionalUser.get();
+                FishPackage fishPackage = new FishPackage();
+                fishPackage.setFishType(packageRequest.getFishType());
+                fishPackage.setBasePrice(packageRequest.getBasePrice());
+                fishPackage.setFishAmount(packageRequest.getFishAmount());
+                fishPackage.setAuctionId(foundAuction.getId());
+                fishPackage.setStatus(FishStatus.UNSOLD);
+                fishPackage.setSoldPrice(0);
+                fishPackage.setBuyerId(null);
+                fishPackage.setSellerId(foundUser.getId());
+                fishPackage.setSoldDate(null);
+                fishPackage.setBidStatus(BidStatus.CLOSE);
+                fishPackage.setBids(new ArrayList<>());
+                packageService.addPackage(fishPackage);
+                foundAuction.getFishList().add(fishPackage);
+                auctionRepository.save(foundAuction);
+            }else {
+                throw new Exception("email bulunamadı");
+            }
         }
+        else{
+            List<Auction> auctions2 = auctionRepository.findAllByAuctionStatus(Sort.by(Sort.Direction.ASC, "auctionStart"), AuctionStatus.STARTING);
+            Auction foundAuction = auctions2.get(0);
+            Optional<User> optionalUser  = Optional.ofNullable(userRepository.findByUserMail(packageRequest.getEmail()));
+            if (optionalUser.isPresent() && packageRequest.getFishType().matches("[a-zA-Z]+")){
+                User foundUser = optionalUser.get();
+                FishPackage fishPackage = new FishPackage();
+                fishPackage.setFishType(packageRequest.getFishType());
+                fishPackage.setBasePrice(packageRequest.getBasePrice());
+                fishPackage.setFishAmount(packageRequest.getFishAmount());
+                fishPackage.setAuctionId(foundAuction.getId());
+                fishPackage.setStatus(FishStatus.UNSOLD);
+                fishPackage.setSoldPrice(0);
+                fishPackage.setBuyerId(null);
+                fishPackage.setSellerId(foundUser.getId());
+                fishPackage.setSoldDate(null);
+                fishPackage.setBidStatus(BidStatus.CLOSE);
+                fishPackage.setBids(new ArrayList<>());
+                packageService.addPackage(fishPackage);
+                foundAuction.getFishList().add(fishPackage);
+                auctionRepository.save(foundAuction);
+            }else {
+                throw new Exception("email bulunamadı");
+            }
+        }
+
     }
 
     public void startAuction(String auctionId) throws Exception{
