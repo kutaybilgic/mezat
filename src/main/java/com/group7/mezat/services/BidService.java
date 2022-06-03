@@ -68,9 +68,6 @@ public class BidService {
             packageService.updateFishPackage(fishPackage);
             bidRepository.insert(bid);
         }
-
-
-
     }
 
     public List<Bid> getFishPackageBids(String fishPackageId) {

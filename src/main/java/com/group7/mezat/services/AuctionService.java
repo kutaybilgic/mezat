@@ -5,8 +5,10 @@ import com.group7.mezat.repos.AuctionRepository;
 import com.group7.mezat.repos.UserRepository;
 import com.group7.mezat.requests.AddPackageRequest;
 import com.group7.mezat.requests.AuctionUpdateRequest;
+import com.group7.mezat.requests.PackageSoldRequest;
 import com.group7.mezat.responses.AuctionResponse;
 import com.group7.mezat.responses.ErrorResponse;
+import com.group7.mezat.responses.PackageResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -15,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -63,7 +62,7 @@ public class AuctionService {
 
 //        if auction date is now return error response with status code 400
         if(auction.getAuctionStart().equals(res)){  //auction start date is today
-            response.setMessage("Şu ana bir açılış tarihi olamaz");
+            response.setMessage("Şu ana bir mezat tarihi olamaz");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
         }
 
@@ -132,7 +131,6 @@ public class AuctionService {
                 throw new Exception("email bulunamadı");
             }
         }
-
     }
 
     public void startAuction(String auctionId) throws Exception{
@@ -174,7 +172,6 @@ public class AuctionService {
             AuctionResponse response = new AuctionResponse(foundAuction);
             return response;
         }
-
     }
 
     public List<Auction> getSortedAuctions() {
@@ -190,22 +187,51 @@ public class AuctionService {
         }
     }
 
-    public List<FishPackage> getFishPackage(String Id) {
+    public Queue<PackageResponse> getFishPackage(String Id) {
         List<FishPackage> fishPackageList;
         Optional<Auction> auction = auctionRepository.findById(Id);
         if (auction.isPresent()){
             fishPackageList = auction.get().getFishList();
-            return fishPackageList;
+//            every fishPackage in the fishPackageList map and create a {@link PackageResponse} queue structure
+            Queue<PackageResponse> packageResponseQueue = new LinkedList<>();
+            int turn = 0;
+            for (FishPackage fishPackage : fishPackageList) {
+                PackageResponse packageResponse = new PackageResponse(fishPackage);
+                packageResponse.setSellerName(userRepository.findById(fishPackage.getSellerId()).get().getName());
+                packageResponse.setTurn(turn);
+                turn++;
+                packageResponseQueue.add(packageResponse);
+            }
+
+            return packageResponseQueue;
         }
         return null;
     }
 
-    public void updateAuctionById(Auction auctionId){
-        Optional<Auction> auction = auctionRepository.findById(auctionId.getId());
-        if (auction.isPresent()){
-            Auction foundAuction = auction.get();
-            foundAuction.setFishList(auctionId.getFishList());
+    public void updateAuctionById(Auction auction){
+        Optional<Auction> optAuction = auctionRepository.findById(auction.getId());
+        if (optAuction.isPresent()){
+            Auction foundAuction = optAuction.get();
+            foundAuction.setFishList(auction.getFishList());
             auctionRepository.save(foundAuction);
         }
     }
+
+    public void sellPackage(String packageId, PackageSoldRequest soldPackageRequest) {
+        packageService.sellPackage(packageId, soldPackageRequest);
+        Auction auction = getCurrentAuction().getAuction();
+        List<FishPackage> fishPackageList = auction.getFishList();
+
+        FishPackage foundPackage = fishPackageList.stream()
+                .filter(fishPackage2 -> fishPackage2.getId().equals(packageId))
+                .findFirst()
+                .orElse(null);
+
+        if(foundPackage != null){
+            foundPackage.setStatus(FishStatus.SOLD);
+            auction.setFishList(fishPackageList);
+            auctionRepository.save(auction);
+        }
+    }
+
 }

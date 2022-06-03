@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Queue;
 
 @RestController
 @RequestMapping("/auction")
@@ -36,7 +37,7 @@ public class AuctionController {
     }
 
     @GetMapping("/getFishPackage/{Id}")
-    public List<FishPackage> getFishPackage(@PathVariable String Id){
+    public Queue<PackageResponse> getFishPackage(@PathVariable String Id){
         return auctionService.getFishPackage(Id);
     }
 

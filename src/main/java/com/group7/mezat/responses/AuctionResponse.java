@@ -30,4 +30,15 @@ public class AuctionResponse {
         this.fishList = auction.getFishList();
         this.bidList = auction.getBidList();
     }
+
+    public Auction getAuction() {
+        Auction auction = new Auction();
+        auction.setId(this.id);
+        auction.setAuctionStatus(this.auctionStatus);
+        auction.setAuctionStart(this.auctionStart);
+        auction.setAuctionEnd(this.auctionEnd);
+        auction.setFishList(this.fishList);
+        auction.setBidList(this.bidList);
+        return auction;
+    }
 }

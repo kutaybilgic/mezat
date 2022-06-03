@@ -15,8 +15,8 @@ public class PackageResponse {
     private String id;
     private String fishType;
     private float fishAmount;
-    private String sellerId;
-    private String buyerId;
+    private String sellerName;
+    private String buyerName;
     private float basePrice;
     private float soldPrice;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
@@ -25,13 +25,12 @@ public class PackageResponse {
     private FishStatus status;
     private BidStatus bidStatus;
     private List<Bid> bids;
+    private int turn;
 
     public PackageResponse(FishPackage fishPackage) {
         this.id = fishPackage.getId();
         this.fishType = fishPackage.getFishType();
         this.fishAmount = fishPackage.getFishAmount();
-        this.sellerId = fishPackage.getSellerId();
-        this.buyerId = fishPackage.getBuyerId();
         this.basePrice = fishPackage.getBasePrice();
         this.soldPrice = fishPackage.getSoldPrice();
         this.soldDate = fishPackage.getSoldDate();

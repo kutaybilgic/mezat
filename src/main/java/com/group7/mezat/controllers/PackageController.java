@@ -58,5 +58,15 @@ public class PackageController {
         packageService.sellPackage(packageId, soldRequest);
     }
 
+    @PutMapping("/startBid/{fishPackageId}")
+    public void startBid(@PathVariable String fishPackageId) throws Exception{
+        packageService.startBid(fishPackageId);
+    }
+
+    @PutMapping("/endBid/{fishPackageId}")
+    public void endBid(@PathVariable String fishPackageId) throws Exception{
+        packageService.endBid(fishPackageId);
+    }
+
 
 }

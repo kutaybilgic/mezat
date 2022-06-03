@@ -83,4 +83,27 @@ public class PackageService {
     public void updateFishPackage(FishPackage fishPackage) {
         packageRepository.save(fishPackage);
     }
+
+    public void startBid(String fishPackageId) throws Exception{
+        Optional<FishPackage> fishPackage = packageRepository.findById(fishPackageId);
+        if(fishPackage.isPresent()){
+            FishPackage foundPackage = fishPackage.get();
+            foundPackage.setBidStatus(BidStatus.OPEN);
+            packageRepository.save(foundPackage);
+        }
+        else{
+            throw new Exception("error");
+        }
+    }
+    public void endBid(String fishPackageId) throws Exception{
+        Optional<FishPackage> fishPackage = packageRepository.findById(fishPackageId);
+        if(fishPackage.isPresent()){
+            FishPackage foundPackage = fishPackage.get();
+            foundPackage.setBidStatus(BidStatus.CLOSE);
+            packageRepository.save(foundPackage);
+        }
+        else{
+            throw new Exception("error");
+        }
+    }
 }
