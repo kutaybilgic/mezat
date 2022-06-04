@@ -2,9 +2,11 @@ package com.group7.mezat.services;
 
 import com.group7.mezat.documents.Auction;
 import com.group7.mezat.documents.Bid;
+import com.group7.mezat.documents.FishPackage;
 import com.group7.mezat.repos.BidRepository;
 import com.group7.mezat.repos.PackageRepository;
 import com.group7.mezat.requests.BidRequest;
+import com.group7.mezat.responses.PackageResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,39 @@ public class BidService {
 
     public void takeBid(BidRequest bidRequest) {
         Bid bid = new Bid();
-        bid.setBid(bidRequest.getBid());
-        bid.setBidderId(bidRequest.getBidderId());
-        bid.setAuctionId(auctionService.getCurrentAuction().getId());
-        bid.setFishPackageId(packageService.getCurrentFish().getId());
-        bidRepository.insert(bid);
+
+        PackageResponse packageResponse = packageService.getCurrentFish();
+        String currentPackageId = packageService.getCurrentFish().getId();
+        System.out.println("currentPackageId: " + currentPackageId);
+        Auction auction = auctionService.getOneAuctionById(packageResponse.getAuctionId());
+        if (currentPackageId != null) {
+            bid.setBid(bidRequest.getBid());
+            bid.setBidderId(bidRequest.getBidderId());
+            bid.setAuctionId(auctionService.getCurrentAuction().getId());
+            bid.setFishPackageId(currentPackageId);
+            FishPackage fishPackage = packageService.getFishPackageById(currentPackageId);
+            List<Bid> bids = fishPackage.getBids();
+            bids.add(bid);
+            fishPackage.setBids(bids);
+
+            List<FishPackage> fishPackages = auction.getFishList();
+
+//            find fishPackage by id in fishPackages
+            FishPackage foundPackage = fishPackages.stream()
+                    .filter(fishPackage2 -> fishPackage2.getId().equals(currentPackageId))
+                    .findFirst()
+                    .orElse(null);
+
+            System.out.println("foundPackage in bid: " + foundPackage.getId());
+
+            if (foundPackage != null) {
+                foundPackage.setBids(bids);
+                auction.setFishList(fishPackages);
+                auctionService.updateAuctionById(auction);
+            }
+            packageService.updateFishPackage(fishPackage);
+            bidRepository.insert(bid);
+        }
     }
 
     public List<Bid> getFishPackageBids(String fishPackageId) {

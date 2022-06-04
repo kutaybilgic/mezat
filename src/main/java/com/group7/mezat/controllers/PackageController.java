@@ -22,13 +22,15 @@ public class PackageController {
         System.out.println("controller");
         return packageService.getOneUsersPackages(buyerId);
     }
-    @GetMapping("/getCurrentFish")
-    public PackageResponse getCurrentFish(){
-        return packageService.getCurrentFish();
-    }
+
     @PostMapping
     public void addPackage(@RequestBody FishPackage fishPackage){
         packageService.addPackage(fishPackage);
+    }
+
+    @GetMapping("/getCurrentFish")
+    public PackageResponse getCurrentFish(){
+        return packageService.getCurrentFish();
     }
 
     @GetMapping("/allSoldPackages")
@@ -54,6 +56,16 @@ public class PackageController {
     @PutMapping("/sell/{packageId}")
     public void sellPackage(@PathVariable String packageId, @RequestBody PackageSoldRequest soldRequest){
         packageService.sellPackage(packageId, soldRequest);
+    }
+
+    @PutMapping("/startBid/{fishPackageId}")
+    public void startBid(@PathVariable String fishPackageId) throws Exception{
+        packageService.startBid(fishPackageId);
+    }
+
+    @PutMapping("/endBid/{fishPackageId}")
+    public void endBid(@PathVariable String fishPackageId) throws Exception{
+        packageService.endBid(fishPackageId);
     }
 
 

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Document
@@ -24,6 +25,7 @@ public class FishPackage {
     private String auctionId;
     private FishStatus status;
     private BidStatus bidStatus;
+    private List<Bid> bids;
 
 }
 
