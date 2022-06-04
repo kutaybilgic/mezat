@@ -1,9 +1,12 @@
 package com.group7.mezat.services;
 
 import com.group7.mezat.documents.Role;
+import com.group7.mezat.responses.ErrorResponse;
 import com.group7.mezat.responses.UserResponse;
 import com.group7.mezat.documents.User;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.group7.mezat.repos.UserRepository;
 import com.group7.mezat.requests.UserPasswordUpdateRequest;
@@ -33,14 +36,24 @@ public class UserService {
     }
 
 
-    public User updateUserPassword(String id, UserPasswordUpdateRequest newUser) {
+    public ResponseEntity<ErrorResponse> updateUserPassword(String id, UserPasswordUpdateRequest newUser) {
         Optional<User> user = userRepository.findById(id);
+        ErrorResponse response = new ErrorResponse();
         if (user.isPresent()){
             User foundUser = user.get();
-            foundUser.setPassword(newUser.getPassword());
-            return userRepository.save(foundUser);
+            if (foundUser.getPassword().equals(newUser.getOldPassword())){
+                foundUser.setPassword(newUser.getPassword());
+               userRepository.save(foundUser);
+                return new ResponseEntity<>(response, HttpStatus.OK); //ok
+            }
+            else{
+                response.setMessage("Girdiğiniz şifre hatalı!");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
+            }
+
         }else{
-            return null;
+            response.setMessage("Oturumun süresi doldu!");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //bad request
         }
     }
 
